@@ -82,7 +82,7 @@ def stop_monitoring(stop_event):
             break
 
 if __name__ == "__main__":
-    router_ip = input("Ingresa la dirección IP del router: ")
+    router_ip = "192.168.0.221"
     stop_event = threading.Event()
 
     monitor_thread = threading.Thread(target=monitor_router, args=(router_ip, stop_event))
