@@ -7,17 +7,16 @@ import subprocess
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# Configuración del correo electrónico
-EMAIL_ADDRESS = "pruebascremona@gmail.com"  # Dirección de correo de remitente
-EMAIL_PASSWORD = "dplb esea fqfw aaei"      # Contraseña del correo de remitente
-SMTP_SERVER = "smtp.gmail.com"              # Servidor SMTP de Gmail
-SMTP_PORT = 587                             # Puerto SMTP de Gmail
+EMAIL_ADDRESS = "pruebascremona@gmail.com" 
+EMAIL_PASSWORD = "dplb esea fqfw aaei"     
+SMTP_SERVER = "smtp.gmail.com"              
+SMTP_PORT = 587                             
 
 def send_email(subject, body):
     try:
         msg = MIMEMultipart()
         msg["From"] = EMAIL_ADDRESS
-        msg["To"] = "samuu8756@gmail.com"  # Cambia a la dirección de destino
+        msg["To"] = "samuu8756@gmail.com"
         msg["Subject"] = subject
         msg.attach(MIMEText(body, "plain"))
 
@@ -32,32 +31,32 @@ def send_email(subject, body):
 def is_router_up(router_ip):
     attempts = 3
     success_count = 0
-    
+
     for _ in range(attempts):
+        # Comando de ping según el sistema operativo
         if platform.system().lower() == "windows":
             command = f"ping -n 1 {router_ip}"
         else:
             command = f"ping -c 1 {router_ip}"
-        
+
         try:
             # Ejecuta el ping y captura la salida
             response = subprocess.check_output(command, shell=True, text=True)
 
-            # Si la respuesta contiene "TTL" (indicando éxito en el ping)
-            if "TTL" in response:
+            # Si la respuesta contiene "ttl" (indicando éxito en el ping en Linux o Windows)
+            if "ttl" in response.lower():
                 success_count += 1
             # Verifica si el mensaje es "inaccesible" para descartar que esté encendido
-            elif "Host de destino inaccesible" in response or "Destination Host Unreachable" in response:
+            elif "inaccesible" in response.lower() or "unreachable" in response.lower():
                 print("La respuesta al ping fue: 'Host de destino inaccesible'. Considerando el router como APAGADO.")
                 return False  # Devuelve inmediatamente si es inaccesible
 
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             # Esto maneja "Tiempo de espera agotado"
             print("La respuesta al ping fue: 'Tiempo de espera agotado para esta solicitud'. Considerando el router como APAGADO.")
 
         time.sleep(1)
 
-    # Considera el router encendido solo si obtiene la mayoría de respuestas exitosas (TTL)
     return success_count >= (attempts // 2) + 1
 
 def monitor_router(router_ip, stop_event):
@@ -82,7 +81,7 @@ def stop_monitoring(stop_event):
             break
 
 if __name__ == "__main__":
-    router_ip = "192.168.0.221"
+    router_ip = "192.168.0.100"  # Cambiar IP según router que queremos monitorear
     stop_event = threading.Event()
 
     monitor_thread = threading.Thread(target=monitor_router, args=(router_ip, stop_event))
