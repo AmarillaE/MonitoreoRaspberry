@@ -1,0 +1,6 @@
+docker logs -f 778a92a22b96
+sudo docker start 778a92a22b96
+EJECUTAR Y CREAR CONTENEDOR:
+docker run <nameImagen>
+CREAR IMAGEN APARTIR DE UN DOCKER FILE
+docker build -t <nameImagen> .
