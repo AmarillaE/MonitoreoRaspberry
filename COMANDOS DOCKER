@@ -4,3 +4,8 @@ EJECUTAR Y CREAR CONTENEDOR:
 docker run <nameImagen>
 CREAR IMAGEN APARTIR DE UN DOCKER FILE
 docker build -t <nameImagen> .
+
+DOCKER REDES
+docker run --network host -d <nameImages>
+
+EL CONTENEDOR VA A TENER LA IP PRIVADA DE MI HOST 
