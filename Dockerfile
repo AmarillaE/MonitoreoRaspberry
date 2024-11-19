@@ -7,9 +7,6 @@ WORKDIR /app
 # Copiar el script Python y cualquier otro archivo necesario al contenedor
 COPY . /app
 
-# Instalar las librerías de Python necesarias
-RUN pip install smtplib
-
 # Establecer las variables de entorno necesarias para el correo electrónico
 ENV EMAIL_ADDRESS="pruebascremona@gmail.com"
 ENV EMAIL_PASSWORD="dplb esea fqfw aaei"
