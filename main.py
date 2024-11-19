@@ -79,7 +79,7 @@ def stop_monitoring(stop_event):
         time.sleep(1)
 
 if __name__ == "__main__":
-    router_ip = "192.168.0.12"  # Cambiar IP según router que queremos monitorear
+    router_ip = "192.168.0.110"  # Cambiar IP según router que queremos monitorear
     stop_event = threading.Event()
 
     monitor_thread = threading.Thread(target=monitor_router, args=(router_ip, stop_event))
