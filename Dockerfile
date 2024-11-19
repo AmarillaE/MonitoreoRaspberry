@@ -1,8 +1,5 @@
-# Usa una imagen oficial de Python
-FROM python:3.9-slim
-
-# Asegurarse de que los certificados CA están instalados
-RUN apt-get update && apt-get install -y ca-certificates iputils-ping
+# Usa una imagen oficial de Python basada en Debian que ya incluye el comando ping
+FROM python:3.9-buster
 
 # Establecer el directorio de trabajo
 WORKDIR /app
