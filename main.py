@@ -1,16 +1,16 @@
 import os
 import time
-import platform
 import threading
 import smtplib
 import subprocess
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-EMAIL_ADDRESS = "pruebascremona@gmail.com" 
-EMAIL_PASSWORD = "dplb esea fqfw aaei"     
-SMTP_SERVER = "smtp.gmail.com"              
-SMTP_PORT = 587                             
+# Utilizar variables de entorno para evitar almacenar contraseñas en el código.
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS", "pruebascremona@gmail.com")  # Cambia a tu correo
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "dplb esea fqfw aaei")  # Cambia a tu contraseña
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
 
 def send_email(subject, body):
     try:
@@ -33,21 +33,17 @@ def is_router_up(router_ip):
     success_count = 0
 
     for _ in range(attempts):
-        # Comando de ping según el sistema operativo
-        if platform.system().lower() == "windows":
-            command = f"ping -n 1 {router_ip}"
-        else:
-            command = f"ping -c 1 {router_ip}"
+        command = f"ping -c 1 {router_ip}"
 
         try:
             # Ejecuta el ping y captura la salida
             response = subprocess.check_output(command, shell=True, text=True)
 
-            # Si la respuesta contiene "ttl" (indicando éxito en el ping en Linux o Windows)
+            # Si la respuesta contiene "ttl" (indicando éxito en el ping en Linux)
             if "ttl" in response.lower():
                 success_count += 1
             # Verifica si el mensaje es "inaccesible" para descartar que esté encendido
-            elif "inaccesible" in response.lower() or "unreachable" in response.lower():
+            elif "inaccessible" in response.lower() or "unreachable" in response.lower():
                 print("La respuesta al ping fue: 'Host de destino inaccesible'. Considerando el router como APAGADO.")
                 return False  # Devuelve inmediatamente si es inaccesible
 
@@ -74,14 +70,16 @@ def monitor_router(router_ip, stop_event):
         time.sleep(5)
 
 def stop_monitoring(stop_event):
-    while True:
-        if input("Presiona '1' y Enter para detener el monitoreo: ") == "1":
+    while not stop_event.is_set():
+        # Aquí se usa un archivo de bandera para detener el monitoreo
+        if os.path.exists("/tmp/stop_monitoring"):
             stop_event.set()
             print("Monitoreo detenido.")
             break
+        time.sleep(1)
 
 if __name__ == "__main__":
-    router_ip = "192.168.0.100"  # Cambiar IP según router que queremos monitorear
+    router_ip = "192.168.0.12"  # Cambiar IP según router que queremos monitorear
     stop_event = threading.Event()
 
     monitor_thread = threading.Thread(target=monitor_router, args=(router_ip, stop_event))
